@@ -7,7 +7,7 @@ use App\Models\Company;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
-class CompanyController extends Controller
+class CompanyController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -54,6 +54,7 @@ class CompanyController extends Controller
     public function show(string $id)
     {
         $company = Company::find($id);
+        $this->resourceExist($company);
 
         return view('companies.show', compact('company'));
     }
@@ -64,6 +65,7 @@ class CompanyController extends Controller
     public function edit(string $id)
     {
         $company = Company::find($id);
+        $this->resourceExist($company);
 
         return view('companies.edit', compact('company'));
     }
@@ -74,6 +76,7 @@ class CompanyController extends Controller
     public function update(CompanyRequest $request, string $id)
     {
         $company = Company::find($id);
+        $this->resourceExist($company);
         $validatedData = $request->validated();
 
         if($request->hasFile('logo_upload')){
@@ -100,6 +103,7 @@ class CompanyController extends Controller
     public function destroy(string $id)
     {
         $company = Company::find($id);
+        $this->resourceExist($company);
         //delete old photo
         if(Storage::exists('public/'.$company->logo)){
             @Storage::delete('public/'.$company->logo);
