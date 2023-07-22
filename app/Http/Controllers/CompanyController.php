@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CompanyRequest;
 use App\Models\Company;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class CompanyController extends Controller
 {
@@ -13,7 +14,8 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        $companies = Company::paginate(10);
+        $companies = Company::latest()->paginate(10);
+
         return view('companies.index', compact('companies'));
     }
 
@@ -31,16 +33,19 @@ class CompanyController extends Controller
     public function store(CompanyRequest $request)
     {
         $validatedData = $request->validated();
-        $id = Company::max('id') + 1;
-        if($validatedData->hasFile('logo_upload')){
-            $filename = 'logo_' . $id . '.png';
-            $imagePath = 'public/'. $filename;
-            Storage::put($imagePath, $validatedData['logo_upload']);
-            $validatedData['logo'] = $filename
+
+        if($request->hasFile('logo_upload')){
+            $id = Company::max('id') + 1;
+            $filename = 'company_' . $id. '.'.$request['logo_upload']->getClientOriginalExtension();
+            Storage::put('public/'.$filename, File::get($request['logo_upload']));
+            $validatedData['logo'] = $filename;
         }
+
         $company = Company::create($validatedData);
 
-        
+            return redirect()->route('companies.index')
+                ->with($company?'success':'error',
+                    $company? 'Company '. $company->name. ' created successfully!': 'Something went wrong!');
     }
 
     /**
@@ -48,7 +53,9 @@ class CompanyController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $company = Company::find($id);
+
+        return view('companies.show', compact('company'));
     }
 
     /**
@@ -56,15 +63,35 @@ class CompanyController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $company = Company::find($id);
+
+        return view('companies.edit', compact('company'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(CompanyRequest $request, string $id)
     {
-        //
+        $company = Company::find($id);
+        $validatedData = $request->validated();
+
+        if($request->hasFile('logo_upload')){
+            $filename = 'company_' . $id. '.'.$request['logo_upload']->getClientOriginalExtension();
+            Storage::put('public/'.$filename, File::get($request['logo_upload']));
+            $validatedData['logo'] = $filename;
+
+            //delete old photo
+            if(file_exists(Storage::get('public/'.$company->logo))){
+                @unlink(storage_path('public/'.$company->logo));
+            }
+        }
+
+        $company->update($validatedData);
+
+        return redirect()->route('companies.index')
+            ->with($company?'success':'error',
+                $company? 'Company '. $company->name. ' updated successfully!': 'Something went wrong!');
     }
 
     /**
@@ -72,6 +99,16 @@ class CompanyController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $company = Company::find($id);
+        //delete old photo
+        if(Storage::exists('public/'.$company->logo)){
+            @Storage::delete('public/'.$company->logo);
+        }
+
+        $company->delete();
+
+        return redirect()->route('companies.index')
+            ->with($company?'success':'error',
+                $company? 'Company '. $company->name. ' deleted successfully!': 'Something went wrong!');
     }
 }
