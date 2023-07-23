@@ -15,7 +15,7 @@ class CompanyTest extends TestCase
 {
     use RefreshDatabase;
 
-    
+
     public function testNewCompanyNotificationEmailSent()
     {
         Mail::fake();

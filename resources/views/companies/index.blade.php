@@ -16,7 +16,7 @@
                             <div class="col-md-6">
                                 <div class="pull-right" style="float: right;">
                                     <a href="{{ route('companies.create') }}" class="btn btn-sm btn-success">
-                                        <i class="fa fa-plus"></i> Add
+                                        <i class="fa fa-plus"></i> Add New
                                     </a>
                                 </div>
                             </div>

@@ -12,12 +12,12 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 <body>
+@php $user = \Illuminate\Support\Facades\Auth::user(); @endphp
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
@@ -25,12 +25,14 @@
                     {{ config('app.name', 'Laravel') }}
                 </a>
                 @auth
-                <a class="navbar-brand" href="{{ route('companies.index') }}">
-                    {{ "Companies" }}
-                </a>
-                <a class="navbar-brand" href="{{ route('employees.index') }}">
-                    {{ "Employees" }}
-                </a>
+                    @if(auth()->check() && auth()->user()->hasRole('admin'))
+                        <a class="navbar-brand" href="{{ route('companies.index') }}">
+                            {{ "Companies" }}
+                        </a>
+                        <a class="navbar-brand" href="{{ route('employees.index') }}">
+                            {{ "Employees" }}
+                        </a>
+                    @endif
                 @endauth
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>

@@ -22,7 +22,7 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::group(['middleware' => 'auth'],function (){
-    Route::resource('companies', \App\Http\Controllers\CompanyController::class);
-    Route::resource('employees', \App\Http\Controllers\EmployeeController::class);
+        Route::resource('companies', \App\Http\Controllers\CompanyController::class);
+        Route::resource('employees', \App\Http\Controllers\EmployeeController::class);
 });
 
