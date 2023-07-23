@@ -22,6 +22,11 @@ Basic Laravel Vue App with Company and Employee CRUD
 
 **You can now access your project at localhost:8000**
 
+You can login using following credentials
+
+- Email : ``admin@admin.com``
+- Password : ``password``
+
 ## If for some reason your project stop working do these:
 - `composer install`
 - `php artisan migrate:fresh --seed`
