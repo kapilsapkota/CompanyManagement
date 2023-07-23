@@ -19,6 +19,8 @@ Basic Laravel Vue App with Company and Employee CRUD
 - Run `php artisan db:seed` to run seeders, if any.
 - Run `php artisan storage:link`
 - Run `php artisan serve`
+- Make sure to setup .env properly for email. (Use mailtrap credentials)
+- Test the app running ``php artisan test``
 
 **You can now access your project at localhost:8000**
 
