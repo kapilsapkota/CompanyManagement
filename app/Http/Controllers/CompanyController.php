@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CompanyRequest;
+use App\Mail\NewCompanyNotification;
 use App\Models\Company;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class CompanyController extends BaseController
@@ -43,7 +45,9 @@ class CompanyController extends BaseController
 
         $company = Company::create($validatedData);
 
-            return redirect()->route('companies.index')
+        Mail::to($company->email)->send(new NewCompanyNotification($company));
+
+        return redirect()->route('companies.index')
                 ->with($company?'success':'error',
                     $company? 'Company '. $company->name. ' created successfully!': 'Something went wrong!');
     }

@@ -24,7 +24,7 @@ class CompanyRequest extends FormRequest
         return [
             'name'          => ['required', 'max:100'],
             'email'         => ['required', 'max:100', 'email','unique:companies,email,'.$this->id],
-            'logo_upload'   => ['nullable','file', 'max:2048', 'mimes:jpeg,jpg,png', 'dimensions:min_width=100,min_height=100'],
+            'logo_upload'   => [$this->id ? 'nullable':'required','file', 'max:2048', 'mimes:jpeg,jpg,png', 'dimensions:min_width=100,min_height=100'],
             'website'       => ['nullable', 'url']
         ];
     }
